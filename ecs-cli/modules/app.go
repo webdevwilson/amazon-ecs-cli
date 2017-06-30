@@ -15,7 +15,8 @@ package app
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/aws/amazon-ecs-cli/ecs-cli/modules/commands"
+	command "github.com/aws/amazon-ecs-cli/ecs-cli/modules/commands"
+	"github.com/aws/amazon-ecs-cli/ecs-cli/modules/utils/waiters"
 	"github.com/urfave/cli"
 )
 
@@ -23,6 +24,10 @@ import (
 func BeforeApp(c *cli.Context) error {
 	if c.GlobalBool(command.VerboseFlag) || c.Bool(command.VerboseFlag) {
 		log.SetLevel(log.DebugLevel)
+	}
+
+	if timeout := c.GlobalInt("timeout"); timeout > 0 {
+		waiters.GlobalTimeout = timeout
 	}
 	return nil
 }

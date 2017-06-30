@@ -41,6 +41,13 @@ func main() {
 
 	composeFactory := ecscompose.NewProjectFactory()
 
+	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:  "timeout",
+			Usage: "How long to wait for a service to become stable",
+		},
+	}
+
 	app.Commands = []cli.Command{
 		configureCommand.ConfigureCommand(),
 		clusterCommand.UpCommand(),

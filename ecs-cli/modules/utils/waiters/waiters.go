@@ -42,6 +42,9 @@ const (
 	servicesMaxRetries = 40
 )
 
+// GlobalTimeout specified at command line
+var GlobalTimeout = 0
+
 // waiterAction defines an action performed on the project entity
 // and returns a bool to stop the wait or error if something unexpected happens
 type waiterAction func(retryCount int) (bool, error)
@@ -50,7 +53,10 @@ type waiterAction func(retryCount int) (bool, error)
 func WaitUntilComplete(action waiterAction, entity entity.ProjectEntity, timeoutMessage string, isService bool) error {
 	var delayWait time.Duration
 	var maxRetries int
-	if isService {
+	if GlobalTimeout > 0 {
+		delayWait = 10 * time.Second
+		maxRetries = GlobalTimeout / 10
+	} else if isService {
 		delayWait = servicesWaitDelay
 		maxRetries = servicesMaxRetries
 	} else {
